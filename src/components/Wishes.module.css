@@ -1,0 +1,94 @@
+.section { background: linear-gradient(160deg, #1A1209 0%, #0D0900 100%); }
+.inner { max-width: 780px; margin: 0 auto; padding: 6rem 2rem; }
+
+.label {
+  font-family: 'Cinzel', serif; font-size: 0.6rem; letter-spacing: 0.5em;
+  color: var(--gold); text-transform: uppercase; text-align: center; margin-bottom: 1rem;
+}
+.title {
+  font-family: 'Cormorant Garamond', serif; font-size: clamp(2rem,5vw,3rem);
+  font-weight: 300; color: var(--gold-pale); text-align: center; margin-bottom: 0.4rem;
+}
+.title em { font-style: italic; color: var(--gold); }
+.subtitle {
+  font-family: 'EB Garamond', serif; font-style: italic; font-size: 1.05rem;
+  color: var(--muted); margin-top: 0.8rem; text-align: center;
+}
+
+.form { margin-top: 3rem; display: flex; flex-direction: column; gap: 1.2rem; }
+.formRow { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; }
+
+.group { display: flex; flex-direction: column; gap: 0.5rem; }
+.group label {
+  font-family: 'Cinzel', serif; font-size: 0.55rem; letter-spacing: 0.35em;
+  color: var(--gold); text-transform: uppercase;
+}
+.group input,
+.group textarea {
+  background: rgba(255,255,255,0.04); border: 1px solid rgba(201,168,76,0.3);
+  color: var(--gold-pale); padding: 0.8rem 1rem;
+  font-family: 'EB Garamond', serif; font-size: 1.05rem;
+  outline: none; transition: border-color 0.3s; resize: none; font-style: italic;
+}
+.group input::placeholder,
+.group textarea::placeholder { color: rgba(201,168,76,0.28); font-style: italic; }
+.group input:focus,
+.group textarea:focus { border-color: var(--gold); }
+.group textarea { min-height: 110px; }
+
+.submitBtn {
+  font-family: 'Cinzel', serif; font-size: 0.7rem; letter-spacing: 0.3em;
+  text-transform: uppercase; color: var(--dark);
+  background: linear-gradient(135deg,#C9A84C,#E8D5A3,#C9A84C);
+  border: none; padding: 1rem; cursor: pointer; transition: opacity 0.3s; width: 100%;
+}
+.submitBtn:hover { opacity: 0.85; }
+
+.confirm {
+  font-family: 'EB Garamond', serif; font-style: italic; font-size: 1.1rem;
+  color: var(--gold-light); text-align: center; margin-top: 0.5rem;
+  animation: fadeIn 1s ease;
+}
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+.boardLabel {
+  font-family: 'Cinzel', serif; font-size: 0.55rem; letter-spacing: 0.45em;
+  color: var(--gold); text-transform: uppercase; text-align: center; margin-bottom: 1.5rem;
+}
+
+.board {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1.2rem;
+}
+
+.empty {
+  grid-column: 1 / -1; text-align: center;
+  font-family: 'EB Garamond', serif; font-style: italic;
+  font-size: 1rem; color: var(--muted); padding: 2rem; opacity: 0.6;
+}
+
+.wishCard {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(201,168,76,0.15);
+  padding: 1.6rem 1.4rem;
+  animation: appear 0.7s ease forwards;
+}
+@keyframes appear {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.wishQuote {
+  font-family: 'EB Garamond', serif; font-style: italic;
+  font-size: 1.1rem; color: var(--gold-pale); line-height: 1.7; margin-bottom: 1rem;
+}
+.wishQuote::before { content: '\201C'; color: var(--gold); font-size: 1.6rem; line-height: 0; vertical-align: -0.35em; margin-right: 2px; }
+.wishQuote::after  { content: '\201D'; color: var(--gold); font-size: 1.6rem; line-height: 0; vertical-align: -0.35em; margin-left: 2px; }
+
+.wishFrom {
+  font-family: 'Cinzel', serif; font-size: 0.55rem;
+  letter-spacing: 0.3em; color: var(--gold); text-transform: uppercase;
+}
+
+@media (max-width: 600px) { .formRow { grid-template-columns: 1fr; } }

@@ -1,0 +1,43 @@
+.section { background: var(--ivory); border-top: 1px solid var(--gold-light); border-bottom: 1px solid var(--gold-light); }
+
+.portraitsWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3rem;
+  margin-top: 3.5rem;
+  flex-wrap: wrap;
+}
+
+.portraitCard { text-align: center; flex: 1; min-width: 220px; max-width: 320px; }
+
+.portraitFrame {
+  width: 200px; height: 200px;
+  margin: 0 auto 1.5rem;
+  border-radius: 50%;
+  border: 2px solid var(--gold-light);
+  outline: 1px solid var(--gold);
+  outline-offset: 6px;
+  background: var(--gold-pale);
+  display: flex; align-items: center; justify-content: center;
+  overflow: hidden;
+}
+.portraitInitial {
+  font-family: 'Cinzel', serif;
+  font-size: 4rem; font-weight: 600;
+  color: var(--gold-dark); opacity: 0.35;
+}
+.portraitName {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.8rem; font-weight: 300; color: var(--brown); margin-bottom: 0.3rem;
+}
+.portraitRole {
+  font-family: 'EB Garamond', serif;
+  font-style: italic; font-size: 1rem; color: var(--muted);
+}
+.portraitsAnd {
+  font-family: 'EB Garamond', serif;
+  font-style: italic; font-size: 3.5rem; color: var(--gold);
+  flex-shrink: 0; line-height: 1; align-self: center; padding-bottom: 2rem;
+}
+@media (max-width: 600px) { .portraitsAnd { display: none; } }

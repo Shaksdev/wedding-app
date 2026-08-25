@@ -1,0 +1,206 @@
+/*
+  EnvelopeIntro.module.css — CSS MODULE for the envelope component.
+
+  CSS Modules work exactly like normal CSS, but when Vite processes them,
+  every class name gets a unique hash appended:
+    .overlay  →  .overlay_a7k3p  (something like that)
+
+  This means ".overlay" here will NEVER clash with ".overlay" in another file.
+  You write normal CSS; the scoping is automatic.
+
+  In the JSX file, you use: className={styles.overlay}
+  NOT:                       className="overlay"
+*/
+
+/* ── Full-screen dark overlay that covers everything ── */
+.overlay {
+  position: fixed;
+  inset: 0; /* shorthand for top:0; right:0; bottom:0; left:0 */
+  z-index: 9999; /* sits on top of everything */
+  background: #0D0900;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+/* When .hide is added, fade the overlay out */
+.hide {
+  animation: overlayFade 0.8s ease 0.3s forwards;
+  /* "forwards" means: keep the final keyframe state after animation ends */
+}
+
+@keyframes overlayFade {
+  to {
+    opacity: 0;
+    pointer-events: none; /* once invisible, don't block clicks */
+    visibility: hidden;
+  }
+}
+
+/* ── Envelope wrapper ── */
+.envWrap {
+  position: relative;
+  width: min(340px, 80vw); /* never wider than 340px or 80% of viewport */
+  cursor: pointer;
+  filter: drop-shadow(0 20px 60px rgba(201,168,76,0.18));
+}
+
+/* perspective wrapper gives the flap its 3D depth */
+.envPerspective {
+  perspective: 900px;
+  perspective-origin: 50% 0%; /* vanishing point at the top center */
+}
+
+/* ── The envelope body (the rectangular part) ── */
+.envBody {
+  position: relative;
+  width: 100%;
+  padding-bottom: 65%; /* height = 65% of width, keeps aspect ratio */
+  background: #1E1305;
+  border: 1px solid rgba(201,168,76,0.35);
+  border-radius: 2px;
+  overflow: visible;
+}
+
+/* ── Envelope folds (the bottom V-shape) using the CSS border triangle trick ── */
+.envBottom {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 100%;
+  overflow: hidden;
+  border-radius: 2px;
+}
+.envBottom::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0;
+  width: 0; height: 0;
+  border-left:   calc(min(340px, 80vw) / 2) solid transparent;
+  border-right:  calc(min(340px, 80vw) / 2) solid transparent;
+  border-bottom: calc(min(340px, 80vw) * 0.33) solid #261808;
+}
+.envLeft {
+  position: absolute;
+  bottom: 0; left: 0;
+  width: 0; height: 0;
+  border-bottom: calc(min(340px, 80vw) * 0.65) solid #221506;
+  border-right:  calc(min(340px, 80vw) / 2) solid transparent;
+}
+.envRight {
+  position: absolute;
+  bottom: 0; right: 0;
+  width: 0; height: 0;
+  border-bottom: calc(min(340px, 80vw) * 0.65) solid #1C1104;
+  border-left:   calc(min(340px, 80vw) / 2) solid transparent;
+}
+
+/* ── The gold wax seal ── */
+.envSeal {
+  position: absolute;
+  bottom: calc(min(340px,80vw) * 0.05);
+  left: 50%;
+  transform: translateX(-50%);
+  width: 44px; height: 44px;
+  background: radial-gradient(circle, #E8D5A3 0%, #C9A84C 60%, #8B6914 100%);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  z-index: 10;
+  transition: opacity 0.4s;
+  border: 1px solid rgba(255,255,255,0.15);
+}
+.envSeal svg { width: 20px; height: 20px; fill: #1A1209; }
+.envSeal.hidden { opacity: 0; pointer-events: none; }
+/* ↑ Wait — .envSeal.hidden won't work in CSS Modules!
+   CSS Modules transforms class names, so this would become
+   something like .envSeal_abc.hidden_abc which is correct —
+   they BOTH need to be from this module.
+   We handle this in JSX by combining both module classes. */
+.hidden { opacity: 0; pointer-events: none; }
+
+/* ── The triangular flap ── */
+.envFlap {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 0;
+  z-index: 20;
+  transform-origin: top center; /* rotation pivots at the TOP edge */
+  transform-style: preserve-3d; /* enables 3D child transforms */
+}
+.envFlapShape {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%;
+  overflow: hidden;
+  pointer-events: none;
+}
+.envFlapShape svg { width: 100%; display: block; }
+
+/* When .opening class is added, play the flap rotation animation */
+.opening {
+  animation: flapOpen 1.4s cubic-bezier(0.4, 0, 0.2, 1) 0.5s forwards;
+}
+@keyframes flapOpen {
+  0%   { transform: rotateX(0deg); }    /* flat/closed */
+  40%  { transform: rotateX(-20deg); }  /* slight hesitation */
+  100% { transform: rotateX(-180deg); } /* fully open (flipped back) */
+}
+
+/* ── The invitation card inside the envelope ── */
+.envCard {
+  position: absolute;
+  left: 8%; right: 8%;
+  bottom: 8%;
+  height: 80%;
+  background: linear-gradient(160deg, #FAF6EE 0%, #F2EBD9 100%);
+  border: 1px solid rgba(201,168,76,0.4);
+  display: flex; align-items: center; justify-content: center;
+  flex-direction: column;
+  text-align: center;
+  padding: 1rem;
+  z-index: 5;
+  transform: translateY(0);
+  opacity: 0; /* starts hidden */
+}
+/* When .rising is added, the card animates upward out of the envelope */
+.rising {
+  animation: cardRise 1.2s cubic-bezier(0.22, 1, 0.36, 1) 1.6s forwards;
+  /* delay of 1.6s = starts after the flap finishes opening */
+}
+@keyframes cardRise {
+  0%   { transform: translateY(0);   opacity: 0; }
+  30%  {                              opacity: 1; }
+  100% { transform: translateY(-85%); opacity: 1; }
+}
+
+.envCardText {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(0.7rem, 2.5vw, 0.95rem);
+  font-weight: 300;
+  color: #3B2A0E;
+  letter-spacing: 0.03em;
+  line-height: 1.5;
+}
+.envCardNames {
+  font-family: 'Cinzel', serif;
+  font-size: clamp(0.55rem, 1.8vw, 0.72rem);
+  letter-spacing: 0.2em;
+  color: #8B6914;
+  text-transform: uppercase;
+  margin-top: 0.4rem;
+}
+
+/* ── Pulsing "Click to open" text ── */
+.envHint {
+  margin-top: 2.5rem;
+  font-family: 'Cinzel', serif;
+  font-size: 0.55rem;
+  letter-spacing: 0.4em;
+  color: #C9A84C;
+  text-transform: uppercase;
+  animation: hintPulse 2s ease 0.2s infinite;
+}
+@keyframes hintPulse {
+  0%, 100% { opacity: 0.3; }
+  50%       { opacity: 0.9; }
+}

@@ -1,0 +1,48 @@
+.section { background: var(--cream); }
+
+.timeline {
+  max-width: 520px;
+  margin: 3rem auto 0;
+  position: relative;
+}
+.timelineLine {
+  position: absolute;
+  left: 50%; top: 0; bottom: 0;
+  width: 1px;
+  background: linear-gradient(to bottom, transparent, var(--gold-light), transparent);
+  transform: translateX(-50%);
+}
+
+.timelineRow {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 1.5rem 0;
+}
+
+.col { flex: 1; }
+.colLeft  { text-align: right; }
+.colRight { text-align: left; }
+
+.time {
+  font-family: 'Cinzel', serif;
+  font-size: 0.55rem;
+  letter-spacing: 0.3em;
+  color: var(--gold-dark);
+  text-transform: uppercase;
+  margin-bottom: 0.3rem;
+}
+.eventLabel {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.2rem;
+  color: var(--brown);
+}
+
+.diamond {
+  width: 10px; height: 10px;
+  background: var(--gold);
+  transform: rotate(45deg);
+  flex-shrink: 0;
+  position: relative;
+  z-index: 1;
+}

@@ -1,0 +1,168 @@
+/*
+  index.css — GLOBAL styles.
+  These apply to the whole app, not just one component.
+  Think of this as the "foundation" of your design system.
+
+  We define CSS custom properties (variables) here in :root
+  so every component can use them without repeating hex codes.
+*/
+
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box; /* makes sizing predictable — padding doesn't add to width */
+}
+
+:root {
+  /* Gold palette — the main brand colours of this wedding */
+  --gold:       #C9A84C;
+  --gold-light: #E8D5A3;
+  --gold-pale:  #F5EDD5;
+  --gold-dark:  #8B6914;
+
+  /* Background & text colours */
+  --cream:  #FAF6EE;
+  --ivory:  #F2EBD9;
+  --dark:   #1A1209;
+  --brown:  #3B2A0E;
+  --text:   #2C1F08;
+  --muted:  #7A6540;
+}
+
+html {
+  scroll-behavior: smooth; /* makes anchor links (#details) scroll smoothly */
+}
+
+body {
+  background-color: var(--dark);
+  color: var(--text);
+  font-family: 'Cormorant Garamond', serif;
+  overflow-x: hidden; /* prevents horizontal scrollbar from appearing */
+}
+
+/* ── Scroll-reveal animation ──────────────────────────────
+   Elements start invisible and slightly shifted down.
+   When the .visible class is added by JavaScript (IntersectionObserver),
+   they smoothly fade in and slide up into place.
+*/
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.9s ease, transform 0.9s ease;
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ── Shared animations ────────────────────────────────────
+   @keyframes define reusable animation sequences.
+   Components reference these by name in their CSS.
+*/
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes riseIn {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes scrollPulse {
+  0%, 100% { opacity: 0.4; }
+  50%       { opacity: 1;   }
+}
+
+/* ── Shared ornament divider ──────────────────────────────
+   A gold line + star decorative element used in multiple sections.
+*/
+.ornament {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin: 2rem 0;
+}
+.ornament span {
+  height: 1px;
+  width: 100px;
+  background: linear-gradient(90deg, transparent, var(--gold-light), transparent);
+  display: block;
+}
+.ornament svg {
+  width: 20px;
+  height: 20px;
+  fill: var(--gold);
+  opacity: 0.7;
+}
+
+/* ── Shared button styles ─────────────────────────────────
+   Used by multiple components so defined globally.
+*/
+.btn-gold {
+  display: inline-block;
+  font-family: 'Cinzel', serif;
+  font-size: 0.62rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--dark);
+  background: linear-gradient(135deg, #C9A84C, #E8D5A3, #C9A84C);
+  border: none;
+  padding: 1rem 2.8rem;
+  cursor: pointer;
+  text-decoration: none;
+  transition: opacity 0.3s;
+}
+.btn-gold:hover { opacity: 0.85; }
+
+.btn-outline {
+  display: inline-block;
+  font-family: 'Cinzel', serif;
+  font-size: 0.62rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--gold);
+  background: transparent;
+  border: 1px solid var(--gold);
+  padding: 1rem 2.8rem;
+  cursor: pointer;
+  text-decoration: none;
+  margin-left: 1rem;
+  transition: background 0.3s, color 0.3s;
+}
+.btn-outline:hover { background: rgba(201,168,76,0.12); }
+
+/* ── Shared section layout ────────────────────────────────
+   Used by almost every section component.
+*/
+.section-inner {
+  max-width: 880px;
+  margin: 0 auto;
+  padding: 6rem 2rem;
+}
+
+.section-label {
+  font-family: 'Cinzel', serif;
+  font-size: 0.6rem;
+  letter-spacing: 0.5em;
+  color: var(--gold-dark);
+  text-transform: uppercase;
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.section-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(2rem, 5vw, 3.2rem);
+  font-weight: 300;
+  color: var(--brown);
+  text-align: center;
+  margin-bottom: 0.6rem;
+  line-height: 1.2;
+}
+.section-title em { font-style: italic; color: var(--gold-dark); }
+
+@media (max-width: 600px) {
+  .btn-outline { margin-left: 0; margin-top: 0.8rem; display: block; text-align: center; }
+}

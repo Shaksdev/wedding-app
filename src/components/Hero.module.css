@@ -1,0 +1,157 @@
+.hero {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: var(--dark);
+  overflow: hidden;
+}
+
+.heroBg {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 80% 60% at 50% 40%, #2E1E05 0%, #120D02 60%, #0A0702 100%);
+}
+
+.glow {
+  position: absolute;
+  width: 700px; height: 700px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(201,168,76,0.08) 0%, transparent 70%);
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+/* ── Corner ornaments ── */
+.corner {
+  position: absolute;
+  width: 180px; height: 180px;
+  opacity: 0.55;
+}
+.corner svg { width: 100%; height: 100%; }
+.cornerTl { top: 0; left: 0; }
+.cornerTr { top: 0; right: 0; transform: scaleX(-1); }
+.cornerBl { bottom: 0; left: 0; transform: scaleY(-1); }
+.cornerBr { bottom: 0; right: 0; transform: scale(-1,-1); }
+
+/* ── Hero content wrapper ── */
+.heroContent {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  padding: 3rem 2rem;
+  max-width: 820px;
+  width: 100%;
+}
+
+/* These elements start invisible (opacity: 0).
+   The .animate class triggers their animations. */
+.tagline {
+  font-family: 'Cinzel', serif;
+  font-size: clamp(0.55rem, 1.2vw, 0.7rem);
+  letter-spacing: 0.4em;
+  color: var(--gold);
+  text-transform: uppercase;
+  margin-bottom: 2.2rem;
+  opacity: 0; /* hidden until animation runs */
+}
+.animate .tagline    { animation: riseIn 1.1s ease 0.1s  forwards; }
+
+.namesWrapper { position: relative; margin-bottom: 1.6rem; }
+
+.brideName, .groomName {
+  display: block;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(3.2rem, 10vw, 7.2rem);
+  font-weight: 300;
+  line-height: 1.05;
+  color: var(--gold-pale);
+  letter-spacing: 0.02em;
+  opacity: 0;
+}
+.animate .brideName  { animation: riseIn 1.1s ease 0.35s forwards; }
+.animate .groomName  { animation: riseIn 1.1s ease 0.7s  forwards; }
+
+.ampersand {
+  display: block;
+  font-family: 'EB Garamond', serif;
+  font-style: italic;
+  font-size: clamp(2rem, 6vw, 4rem);
+  color: var(--gold);
+  line-height: 1.2;
+  margin: 0.2rem 0;
+  opacity: 0;
+}
+.animate .ampersand  { animation: riseIn 1.1s ease 0.55s forwards; }
+
+.dividerLine {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin: 2rem auto;
+  opacity: 0;
+}
+.animate .dividerLine { animation: riseIn 1.1s ease 0.95s forwards; }
+
+.line {
+  display: block;
+  height: 1px;
+  width: 80px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+}
+.diamond {
+  width: 6px; height: 6px;
+  background: var(--gold);
+  transform: rotate(45deg);
+}
+
+.heroDate {
+  font-family: 'Cinzel', serif;
+  font-size: clamp(0.65rem, 1.5vw, 0.85rem);
+  letter-spacing: 0.35em;
+  color: var(--gold-light);
+  text-transform: uppercase;
+  margin-bottom: 2.8rem;
+  opacity: 0;
+}
+.animate .heroDate   { animation: riseIn 1.1s ease 1.15s forwards; }
+
+.heroCta { opacity: 0; }
+.animate .heroCta    { animation: riseIn 1.1s ease 1.4s  forwards; }
+
+.scrollIndicator {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 2rem;
+  opacity: 0;
+}
+.animate .scrollIndicator { animation: riseIn 1.1s ease 1.9s forwards; }
+
+.scrollIndicator span {
+  font-family: 'Cinzel', serif;
+  font-size: 0.5rem;
+  letter-spacing: 0.4em;
+  color: var(--muted);
+  text-transform: uppercase;
+}
+.scrollLine {
+  width: 1px; height: 40px;
+  background: linear-gradient(to bottom, var(--gold), transparent);
+  animation: scrollPulse 2s ease-in-out infinite 3s;
+}
+
+/* riseIn is defined in index.css and inherited globally */
+@keyframes riseIn {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 600px) {
+  .corner { width: 110px; height: 110px; }
+}
