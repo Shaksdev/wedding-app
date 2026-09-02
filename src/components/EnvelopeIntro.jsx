@@ -1,121 +1,261 @@
-// EnvelopeIntro.jsx
-//
-// ┌─────────────────────────────────────────────────────────────┐
-// │  WHAT ARE PROPS?                                            │
-// │                                                             │
-// │  Props (short for "properties") are how a parent component  │
-// │  passes data or functions DOWN to a child component.        │
-// │                                                             │
-// │  In App.jsx we wrote:  <EnvelopeIntro onOpen={handleEnvelopeOpen} />    │
-// │  Here we receive it:   function EnvelopeIntro({ onOpen })  │
-// │                                                             │
-// │  Props flow ONE way: parent → child. A child cannot directly│
-// │  change a parent's state — it can only call a function the  │
-// │  parent passed it. That's what onOpen is.                   │
-// └─────────────────────────────────────────────────────────────┘
-
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import styles from './EnvelopeIntro.module.css'
-// ↑ CSS Modules — a way to write CSS where class names are
-//   automatically scoped to THIS component only.
-//   No risk of one component's CSS accidentally breaking another's.
-//   We use styles.className instead of just "className".
 
-// Destructure the onOpen prop directly in the function parameters.
-// It's the same as: function EnvelopeIntro(props) { const onOpen = props.onOpen }
+// Floating particle — a tiny gold speck that drifts upward
+function Particle({ style }) {
+  return <div className={styles.particle} style={style} />
+}
+
 function EnvelopeIntro({ onOpen }) {
+  const [opening, setOpening]   = useState(false)
+  const [cardUp,  setCardUp]    = useState(false)
+  const [hiding,  setHiding]    = useState(false)
+  const [particles, setParticles] = useState([])
+  const canvasRef = useRef(null)
 
-  // Local state: has the user clicked to open the envelope?
-  // This state lives INSIDE this component — App doesn't need to know about it.
-  // Only when the animation finishes do we tell App via onOpen().
-  const [opening, setOpening] = useState(false)
+  // Generate random floating particles on mount
+  useEffect(() => {
+    const pts = Array.from({ length: 18 }, (_, i) => ({
+      id: i,
+      left:     `${Math.random() * 100}%`,
+      animationDelay: `${Math.random() * 4}s`,
+      animationDuration: `${4 + Math.random() * 5}s`,
+      width:  `${2 + Math.random() * 3}px`,
+      height: `${2 + Math.random() * 3}px`,
+      opacity: 0.2 + Math.random() * 0.5,
+    }))
+    setParticles(pts)
+  }, [])
 
   const handleClick = () => {
-    // Guard: if already opening, ignore extra clicks
     if (opening) return
-
-    // Update state → React re-renders → CSS classes change → animation plays
     setOpening(true)
 
-    // After the animation sequence completes, tell the parent (App)
-    // via the onOpen prop function. This will cause App to set
-    // envelopeOpened = true and hide this overlay.
-    onOpen()
+    // Step 1: flap opens (0.5s delay + 1.4s duration = done at ~1.9s)
+    // Step 2: card rises at 1.6s, takes 1.2s = done at ~2.8s
+    setTimeout(() => setCardUp(true), 1600)
+
+    // Step 3: overlay fades at 3.4s
+    setTimeout(() => setHiding(true), 3400)
+
+    // Step 4: tell parent at 4.0s (after fade)
+    onOpen() // App.jsx waits its own 3.2s internally
   }
 
-  // We build class strings conditionally:
-  // If opening is true, we add the animation class; otherwise empty string.
-  const overlayClass  = `${styles.overlay} ${opening ? styles.hide : ''}`
-  const flapClass     = `${styles.envFlap}  ${opening ? styles.opening : ''}`
-  const cardClass     = `${styles.envCard}  ${opening ? styles.rising : ''}`
-  const sealClass     = `${styles.envSeal}  ${opening ? styles.hidden : ''}`
+  const overlayClass = [styles.overlay, hiding ? styles.hide : ''].join(' ')
+  const flapClass    = [styles.flap,    opening ? styles.flapOpen : ''].join(' ')
+  const cardClass    = [styles.card,    cardUp  ? styles.cardRise : ''].join(' ')
+  const sealClass    = [styles.seal,    opening ? styles.sealHide : ''].join(' ')
 
   return (
-    // The full-screen overlay that sits on top of everything
     <div className={overlayClass}>
 
-      {/* The clickable envelope wrapper */}
-      <div className={styles.envWrap} onClick={handleClick}>
+      {/* Ambient particles */}
+      {particles.map(p => (
+        <Particle key={p.id} style={{
+          left: p.left,
+          width: p.width,
+          height: p.height,
+          opacity: p.opacity,
+          animationDelay: p.animationDelay,
+          animationDuration: p.animationDuration,
+        }} />
+      ))}
 
-        {/* perspective div enables the 3D rotation effect on the flap */}
-        <div className={styles.envPerspective}>
-          <div className={styles.envBody}>
+      {/* Radial glow behind envelope */}
+      <div className={styles.glow} />
 
-            {/* The envelope's bottom fold — made with CSS borders (triangle trick) */}
-            <div className={styles.envBottom}>
-              <div className={styles.envLeft}></div>
-              <div className={styles.envRight}></div>
-            </div>
+      {/* Pre-text */}
+      {!opening && (
+        <p className={styles.preText}>A wedding invitation</p>
+      )}
 
-            {/* The small card visible inside the envelope before it rises */}
+      {/* THE ENVELOPE */}
+      <div className={styles.envOuter} onClick={handleClick}>
+        <div className={styles.perspective}>
+          <div className={styles.envelope}>
+
+            {/* ── Back of envelope (visible behind card) ── */}
+            <div className={styles.envBack} />
+
+            {/* ── Invitation card (sits inside, rises out) ── */}
             <div className={cardClass}>
-              <p className={styles.envCardText}>You are cordially invited to the wedding celebration of</p>
-              <p className={styles.envCardNames}>Opeyemi &amp; Hammed</p>
-              {/*
-                &amp; is an HTML entity for the & character.
-                In JSX you must use entities for special characters,
-                or just write them as JavaScript strings: {'&'}
-              */}
-            </div>
+              {/* Card inner border */}
+              <div className={styles.cardInner}>
+                <div className={styles.cardTopLine} />
 
-            {/* The triangular flap that opens */}
-            <div className={flapClass}>
-              <div className={styles.envFlapShape}>
-                {/* Inline SVG — the triangular flap shape */}
-                <svg viewBox="0 0 340 130" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-                  <polygon points="0,0 340,0 170,115" fill="#261808"/>
-                  <polyline points="0,0 170,115 340,0" fill="none" stroke="#C9A84C" strokeWidth="0.8" opacity="0.5"/>
-                  <polyline points="12,0 170,103 328,0" fill="none" stroke="#C9A84C" strokeWidth="0.4" opacity="0.25"/>
-                  {/*
-                    Notice: in JSX, HTML attributes that have dashes become camelCase.
-                    HTML:  stroke-width="0.8"
-                    JSX:   strokeWidth="0.8"
-                    This is because JSX is actually JavaScript, and dashes aren't
-                    valid in JS property names.
-                  */}
-                </svg>
+                <p className={styles.cardEyebrow}>Together with their families</p>
+
+                {/* Monogram on card */}
+                <div className={styles.cardMonogram}>
+                  <span className={styles.cardInitial}>O</span>
+                  <span className={styles.cardAmp}>&amp;</span>
+                  <span className={styles.cardInitial}>H</span>
+                </div>
+
+                <p className={styles.cardNames}>Opeyemi &amp; Hammed</p>
+                <div className={styles.cardDivider}>
+                  <span /><span className={styles.cardDiamond} /><span />
+                </div>
+                <p className={styles.cardDate}>[Day · Month · Year]</p>
+                <p className={styles.cardVenue}>Lagos, Nigeria</p>
+
+                <div className={styles.cardBottomLine} />
               </div>
             </div>
 
-            {/* The gold wax seal */}
-            <div className={sealClass}>
-              <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z"/>
+            {/* ── Envelope body ── */}
+            <div className={styles.envBody}>
+
+              {/* Side folds (left & right triangles) */}
+              <div className={styles.foldLeft} />
+              <div className={styles.foldRight} />
+              {/* Bottom fold */}
+              <div className={styles.foldBottom} />
+
+              {/* Lining pattern — subtle inner diamond grid */}
+              <svg className={styles.lining} viewBox="0 0 400 260" preserveAspectRatio="xMidYMid slice">
+                <defs>
+                  <pattern id="diamond" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
+                    <polygon points="10,2 18,10 10,18 2,10" fill="none" stroke="rgba(201,168,76,0.12)" strokeWidth="0.6"/>
+                  </pattern>
+                </defs>
+                <rect width="400" height="260" fill="url(#diamond)" />
+              </svg>
+
+              {/* Decorative border lines */}
+              <div className={styles.envBorderOuter} />
+              <div className={styles.envBorderInner} />
+
+              {/* Corner ornaments on envelope face */}
+              <svg className={`${styles.cornerOrn} ${styles.cornTL}`} viewBox="0 0 60 60" fill="none">
+                <path d="M4 4 L4 28 Q4 36 12 36" stroke="#C9A84C" strokeWidth="0.8" opacity="0.6"/>
+                <path d="M4 4 L28 4 Q36 4 36 12" stroke="#C9A84C" strokeWidth="0.8" opacity="0.6"/>
+                <circle cx="4" cy="4" r="2" fill="#C9A84C" opacity="0.5"/>
+              </svg>
+              <svg className={`${styles.cornerOrn} ${styles.cornTR}`} viewBox="0 0 60 60" fill="none">
+                <path d="M4 4 L4 28 Q4 36 12 36" stroke="#C9A84C" strokeWidth="0.8" opacity="0.6"/>
+                <path d="M4 4 L28 4 Q36 4 36 12" stroke="#C9A84C" strokeWidth="0.8" opacity="0.6"/>
+                <circle cx="4" cy="4" r="2" fill="#C9A84C" opacity="0.5"/>
+              </svg>
+              <svg className={`${styles.cornerOrn} ${styles.cornBL}`} viewBox="0 0 60 60" fill="none">
+                <path d="M4 4 L4 28 Q4 36 12 36" stroke="#C9A84C" strokeWidth="0.8" opacity="0.6"/>
+                <path d="M4 4 L28 4 Q36 4 36 12" stroke="#C9A84C" strokeWidth="0.8" opacity="0.6"/>
+                <circle cx="4" cy="4" r="2" fill="#C9A84C" opacity="0.5"/>
+              </svg>
+              <svg className={`${styles.cornerOrn} ${styles.cornBR}`} viewBox="0 0 60 60" fill="none">
+                <path d="M4 4 L4 28 Q4 36 12 36" stroke="#C9A84C" strokeWidth="0.8" opacity="0.6"/>
+                <path d="M4 4 L28 4 Q36 4 36 12" stroke="#C9A84C" strokeWidth="0.8" opacity="0.6"/>
+                <circle cx="4" cy="4" r="2" fill="#C9A84C" opacity="0.5"/>
+              </svg>
+
+            </div>
+
+            {/* ── THE FLAP ── */}
+            <div className={flapClass}>
+              <svg viewBox="0 0 400 200" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+                {/* Flap face */}
+                <polygon points="0,0 400,0 200,175" fill="#1C1004"/>
+                {/* Flap lining (slightly lighter — the inner face seen when open) */}
+                <polygon points="0,0 400,0 200,175" fill="#251508" opacity="0"/>
+                {/* Outer fold edge */}
+                <polyline points="0,0 200,175 400,0" fill="none" stroke="#C9A84C" strokeWidth="1" opacity="0.45"/>
+                {/* Inner fold edge */}
+                <polyline points="14,0 200,161 386,0" fill="none" stroke="#C9A84C" strokeWidth="0.5" opacity="0.2"/>
+                {/* Diamond pattern on flap */}
+                <defs>
+                  <pattern id="flapDiamond" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
+                    <polygon points="10,2 18,10 10,18 2,10" fill="none" stroke="rgba(201,168,76,0.08)" strokeWidth="0.5"/>
+                  </pattern>
+                  <clipPath id="flapClip">
+                    <polygon points="0,0 400,0 200,175"/>
+                  </clipPath>
+                </defs>
+                <rect width="400" height="200" fill="url(#flapDiamond)" clipPath="url(#flapClip)"/>
               </svg>
             </div>
 
-          </div>
-        </div>
-      </div>
+            {/* ── MONOGRAM SEAL ── */}
+            <div className={sealClass}>
+              <svg className={styles.sealSvg} viewBox="0 0 160 80" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                  <linearGradient id="monoGold" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%"   stopColor="#F5EDD5"/>
+                    <stop offset="40%"  stopColor="#C9A84C"/>
+                    <stop offset="100%" stopColor="#8B6914"/>
+                  </linearGradient>
+                  <linearGradient id="lineGold" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%"   stopColor="transparent"/>
+                    <stop offset="50%"  stopColor="#C9A84C"/>
+                    <stop offset="100%" stopColor="transparent"/>
+                  </linearGradient>
+                  <filter id="monoGlow">
+                    <feGaussianBlur stdDeviation="1.5" result="blur"/>
+                    <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+                  </filter>
+                </defs>
 
-      {/* Pulsing "Click to open" hint below the envelope */}
-      {/*
-        CONDITIONAL RENDERING with ternary operator:
-        condition ? "show this if true" : "show this if false"
-        When opening starts, hide the hint immediately.
-      */}
+                {/* Left decorative line */}
+                <line x1="4" y1="40" x2="34" y2="40" stroke="url(#lineGold)" strokeWidth="0.8"/>
+                {/* Left tiny diamond */}
+                <polygon points="36,40 39,37 42,40 39,43" fill="#C9A84C" opacity="0.7"/>
+
+                {/* The O */}
+                <text
+                  x="58" y="52"
+                  textAnchor="middle"
+                  fontFamily="Cinzel, serif"
+                  fontSize="38"
+                  fontWeight="400"
+                  fill="url(#monoGold)"
+                  filter="url(#monoGlow)"
+                  letterSpacing="-1"
+                >O</text>
+
+                {/* Thin vertical divider between letters */}
+                <line x1="80" y1="18" x2="80" y2="62" stroke="#C9A84C" strokeWidth="0.6" opacity="0.4"/>
+
+                {/* The H */}
+                <text
+                  x="102" y="52"
+                  textAnchor="middle"
+                  fontFamily="Cinzel, serif"
+                  fontSize="38"
+                  fontWeight="400"
+                  fill="url(#monoGold)"
+                  filter="url(#monoGlow)"
+                  letterSpacing="-1"
+                >H</text>
+
+                {/* Right tiny diamond */}
+                <polygon points="118,40 121,37 124,40 121,43" fill="#C9A84C" opacity="0.7"/>
+                {/* Right decorative line */}
+                <line x1="126" y1="40" x2="156" y2="40" stroke="url(#lineGold)" strokeWidth="0.8"/>
+
+                {/* Tagline beneath */}
+                <text
+                  x="80" y="72"
+                  textAnchor="middle"
+                  fontFamily="Cinzel, serif"
+                  fontSize="5"
+                  fill="#C9A84C"
+                  letterSpacing="4"
+                  opacity="0.6"
+                >FOREVER BEGINS</text>
+              </svg>
+            </div>
+
+          </div>{/* /envelope */}
+        </div>{/* /perspective */}
+      </div>{/* /envOuter */}
+
+      {/* Click hint */}
       {!opening && (
-        <p className={styles.envHint}>Click to open</p>
+        <div className={styles.hintWrap}>
+          <div className={styles.hintLine} />
+          <p className={styles.hint}>Touch to reveal your invitation</p>
+          <div className={styles.hintLine} />
+        </div>
       )}
 
     </div>

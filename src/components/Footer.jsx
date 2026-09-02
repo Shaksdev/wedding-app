@@ -18,8 +18,8 @@ function Footer() {
       <p className={styles.names}>Opeyemi &amp; Hammed</p>
       <p className={styles.date}>[Date] · Lagos</p>
       <p className={styles.verse}>
-        "Two are better than one, because they have a good reward for their toil."
-        <br />— Ecclesiastes 4:9
+        “And of His signs is that He created for you from yourselves mates that you may find tranquility in them. And He placed between you affection and mercy. Indeed, in that are signs for a people who give thought.”
+        <br />— Surah Ar-Rum (30:21)
       </p>
       <p className={styles.credit}>Made with love ✦</p>
     </footer>
