@@ -45,10 +45,10 @@ const HeartIcon = () => (
 // Notice how we can store a React component IN a JavaScript object.
 // When we render {card.Icon}, JSX knows to call it as a component: <CalendarIcon />.
 const cards = [
-  { Icon: CalendarIcon, label: 'Date',      primary: '[Day Month, Year]', secondary: 'Saturday' },
+  { Icon: CalendarIcon, label: 'Date',      primary: '[29th October, 2026]', secondary: 'Thursday' },
   { Icon: ClockIcon,    label: 'Time',      primary: '12:00 Noon',        secondary: 'Reception follows' },
-  { Icon: LocationIcon, label: 'Venue',     primary: 'Venue Name Here',   secondary: 'Lagos, Nigeria' },
-  { Icon: HeartIcon,    label: 'Dress Code', primary: 'Black & Gold',     secondary: 'Formal attire' },
+  { Icon: LocationIcon, label: 'Venue',     primary: 'Venue Name Here',   secondary: 'Ibadan, Nigeria' },
+  { Icon: HeartIcon,    label: 'Dress Code', primary: 'White & Gold',     secondary: 'Formal attire' },
 ]
 
 // ── DetailCard sub-component ───────────────────────────────────

@@ -62,9 +62,9 @@ function Hero({ envelopeOpened }) {
         <p className={styles.tagline}>Together with their families</p>
 
         <div className={styles.namesWrapper}>
-          <span className={styles.brideName}>Opeyemi Adeoje</span>
+          <span className={styles.brideName}>Opeyemi <br /> Jelilah</span>
           <span className={styles.ampersand}>&amp;</span>
-          <span className={styles.groomName}>Hammed Adeola</span>
+          <span className={styles.groomName}>Olakunle Abdul-Hammed</span>
         </div>
 
         <div className={styles.dividerLine}>
@@ -74,7 +74,7 @@ function Hero({ envelopeOpened }) {
         </div>
 
         <p className={styles.heroDate}>
-          Saturday, the [Day] of [Month] &middot; [Year] &middot; Lagos, Nigeria
+          Thursday, the 29th of October &middot; 2026 &middot; Ibadan, Nigeria
         </p>
 
         <div className={styles.heroCta}>

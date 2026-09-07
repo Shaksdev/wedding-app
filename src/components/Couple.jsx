@@ -3,8 +3,8 @@ import useReveal from '../hooks/useReveal'
 import styles from './Couple.module.css'
 
 const coupleData = [
-  { name: 'Opeyemi Adeoje', role: 'The Bride',  initial: 'O' },
-  { name: 'Hammed Adeola',  role: 'The Groom',  initial: 'H' },
+  { name: 'Opeyemi Jelilah', role: 'The Bride',  initial: 'O' },
+  { name: 'Olakunle Abdul-Hammed',  role: 'The Groom',  initial: 'H' },
 ]
 
 function PortraitCard({ name, role, initial }) {

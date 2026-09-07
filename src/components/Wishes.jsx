@@ -1,101 +1,75 @@
 // Wishes.jsx
-//
-// ┌─────────────────────────────────────────────────────────────┐
-// │  THIS IS THE MOST INSTRUCTIVE COMPONENT IN THE PROJECT      │
-// │                                                             │
-// │  It demonstrates:                                           │
-// │  1. CONTROLLED INPUTS — React owns the form field values    │
-// │  2. MULTIPLE STATE VALUES — three separate useState calls   │
-// │  3. EVENT HANDLERS — onChange and onSubmit                  │
-// │  4. CONDITIONAL RENDERING — showing/hiding the confirm msg  │
-// │  5. ARRAY STATE — adding to a list and re-rendering it      │
-// └─────────────────────────────────────────────────────────────┘
+// Changes from previous version:
+//   - Removed "relation" field
+//   - Added "Send Anonymously" toggle checkbox
+//   - Added Donation section below the wishes board
 
 import { useState } from 'react'
 import useReveal from '../hooks/useReveal'
 import styles from './Wishes.module.css'
 
-// ── WishCard: renders one submitted message ────────────────────
-function WishCard({ name, relation, message }) {
+// ── WishCard ───────────────────────────────────────────────────
+function WishCard({ name, message, anonymous }) {
   return (
     <div className={styles.wishCard}>
       <p className={styles.wishQuote}>{message}</p>
       <p className={styles.wishFrom}>
-        {name}{relation ? ` · ${relation}` : ''}
-        {/*
-          Conditional rendering with ternary in JSX:
-          If relation is not empty, render " · relation", else render nothing ('').
-          The backtick template literal builds the string dynamically.
-        */}
+        {anonymous ? 'Anonymous' : name}
       </p>
     </div>
   )
 }
 
+// ── DonationCard ───────────────────────────────────────────────
+function DonationCard({ icon, title, detail, sub, note }) {
+  const [copied, setCopied] = useState(false)
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(detail)
+    setCopied(true)
+    setTimeout(() => setCopied(false), 2000)
+  }
+
+  return (
+    <div className={styles.donationCard}>
+      <div className={styles.donationIcon}>{icon}</div>
+      <p className={styles.donationTitle}>{title}</p>
+      <p className={styles.donationDetail}>{detail}</p>
+      {sub  && <p className={styles.donationSub}>{sub}</p>}
+      {note && <p className={styles.donationNote}>{note}</p>}
+      <button className={styles.copyBtn} onClick={handleCopy}>
+        {copied ? '✓ Copied' : 'Copy'}
+      </button>
+    </div>
+  )
+}
+
+// ── Main Wishes component ──────────────────────────────────────
 function Wishes() {
   const sectionRef = useReveal()
 
-  // ── CONTROLLED FORM STATE ─────────────────────────────────────
-  // In React, form inputs are "controlled" — React holds the value
-  // in state and the input displays whatever React says.
-  //
-  // Why controlled inputs?
-  // - You always know the current value (it's in state, not the DOM).
-  // - You can validate, transform, or reset values easily.
-  // - React and the DOM stay in sync.
-  //
-  // The pattern:
-  //   value={stateName}           ← input displays this state value
-  //   onChange={e => setStateName(e.target.value)}  ← updates state on every keystroke
-  //
-  // e is the event object (the browser's event).
-  // e.target is the input element.
-  // e.target.value is what the user typed.
-  const [name,     setName]     = useState('')
-  const [relation, setRelation] = useState('')
-  const [message,  setMessage]  = useState('')
-
-  // ── WISHES LIST STATE ─────────────────────────────────────────
-  // An array of wish objects: [{ name, relation, message }, ...]
-  // Initially empty — no one has submitted yet.
-  const [wishes, setWishes] = useState([])
-
-  // ── CONFIRMATION MESSAGE STATE ────────────────────────────────
-  // A boolean: show the "thank you" message after submitting?
+  const [name,      setName]      = useState('')
+  const [message,   setMessage]   = useState('')
+  const [anonymous, setAnonymous] = useState(false)
+  const [wishes,      setWishes]      = useState([])
   const [showConfirm, setShowConfirm] = useState(false)
 
-  // ── FORM SUBMIT HANDLER ───────────────────────────────────────
-  // Called when the form's submit button is clicked.
   const handleSubmit = (e) => {
-    // e.preventDefault() stops the browser from reloading the page.
-    // By default, submitting a form causes a full page reload.
-    // React forms always need this.
     e.preventDefault()
+    if (!message.trim()) return
+    if (!anonymous && !name.trim()) return
 
-    // Basic validation — don't submit if name or message is empty
-    if (!name.trim() || !message.trim()) return
+    const newWish = {
+      name:      anonymous ? '' : name.trim(),
+      message:   message.trim(),
+      anonymous,
+    }
 
-    // Create the new wish object
-    const newWish = { name: name.trim(), relation: relation.trim(), message: message.trim() }
-
-    // Update the wishes array state.
-    // IMPORTANT: Never mutate state directly! Don't do: wishes.push(newWish)
-    // Instead, create a NEW array with the spread operator:
-    // [...wishes] copies all existing wishes, newWish adds the new one at the end.
-    // React compares old and new state — if it's the same object, it won't re-render.
-    // Spreading creates a new array reference, so React detects the change.
     setWishes([...wishes, newWish])
-
-    // Reset form fields back to empty strings
     setName('')
-    setRelation('')
     setMessage('')
-
-    // Show the thank-you message
+    setAnonymous(false)
     setShowConfirm(true)
-
-    // Hide it again after 4 seconds using a timer
-    // setTimeout is a browser API — runs a function after a delay (ms)
     setTimeout(() => setShowConfirm(false), 4000)
   }
 
@@ -106,19 +80,14 @@ function Wishes() {
         <div className="reveal">
           <p className={styles.label}>Blessings &amp; Wishes</p>
           <h2 className={styles.title}>Leave a <em>Message</em></h2>
-          <p className={styles.subtitle}>Share your love and well wishes for the happy couple</p>
+          <p className={styles.subtitle}>
+            Share your love and well wishes for the happy couple
+          </p>
         </div>
 
-        {/* ── THE FORM ── */}
-        {/*
-          onSubmit={handleSubmit} attaches our handler to the form's submit event.
-          Note: we pass the FUNCTION REFERENCE handleSubmit, not a call handleSubmit().
-          onSubmit={handleSubmit}    ✓ correct — passes the function
-          onSubmit={handleSubmit()}  ✗ wrong — calls it immediately on render
-        */}
         <form className={`${styles.form} reveal`} onSubmit={handleSubmit}>
 
-          <div className={styles.formRow}>
+          {!anonymous && (
             <div className={styles.group}>
               <label>Your Name</label>
               <input
@@ -126,22 +95,10 @@ function Wishes() {
                 placeholder="e.g. Aunty Funke"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                required
-                // value= makes this a controlled input.
-                // onChange= keeps state in sync with every keystroke.
-                // required= is native HTML validation.
+                required={!anonymous}
               />
             </div>
-            <div className={styles.group}>
-              <label>Your Relation</label>
-              <input
-                type="text"
-                placeholder="e.g. Friend of the bride"
-                value={relation}
-                onChange={(e) => setRelation(e.target.value)}
-              />
-            </div>
-          </div>
+          )}
 
           <div className={styles.group}>
             <label>Your Message</label>
@@ -153,14 +110,22 @@ function Wishes() {
             />
           </div>
 
+          <label className={styles.anonToggle}>
+            <input
+              type="checkbox"
+              checked={anonymous}
+              onChange={(e) => setAnonymous(e.target.checked)}
+            />
+            <span className={styles.anonBox}>
+              {anonymous && <span className={styles.anonCheck}>✦</span>}
+            </span>
+            <span className={styles.anonLabel}>Send anonymously</span>
+          </label>
+
           <button type="submit" className={styles.submitBtn}>
             Send Your Wishes ✦
           </button>
 
-          {/*
-            Conditional rendering with &&:
-            Only render the confirm paragraph if showConfirm is true.
-          */}
           {showConfirm && (
             <p className={styles.confirm}>
               ✦ Your blessing has been received. Thank you for your love! ✦
@@ -168,7 +133,6 @@ function Wishes() {
           )}
         </form>
 
-        {/* ── WISHES BOARD ── */}
         <div className="reveal" style={{ marginTop: '3rem' }}>
           <div className="ornament">
             <span style={{ background: 'linear-gradient(90deg,transparent,rgba(201,168,76,0.4),transparent)' }}></span>
@@ -181,15 +145,6 @@ function Wishes() {
         </div>
 
         <div className={styles.board}>
-          {/*
-            Conditional rendering using ternary:
-            If no wishes yet, show the placeholder.
-            Otherwise, render all the wish cards.
-
-            [...wishes].reverse() creates a reversed COPY (newest first).
-            We copy with [...] before reversing because .reverse() mutates
-            the original array — we never want to mutate state directly.
-          */}
           {wishes.length === 0 ? (
             <p className={styles.empty}>
               Be the first to leave a message for the happy couple ✦
@@ -199,12 +154,82 @@ function Wishes() {
               <WishCard
                 key={index}
                 name={wish.name}
-                relation={wish.relation}
                 message={wish.message}
+                anonymous={wish.anonymous}
               />
             ))
           )}
         </div>
+
+        {/* ── DONATION SECTION ── */}
+        {/* <div className={`${styles.donationSection} reveal`}>
+
+          <div className={styles.donationDivider}>
+            <span />
+            <div className={styles.donationDividerIcon}>
+              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="3" y="8" width="18" height="13" rx="1" stroke="#C9A84C" strokeWidth="1.2"/>
+                <path d="M3 12h18" stroke="#C9A84C" strokeWidth="1.2"/>
+                <path d="M12 8V21" stroke="#C9A84C" strokeWidth="1.2"/>
+                <path d="M12 8C12 8 9 5 7 5C5.5 5 5 6 5 7C5 8.5 6.5 8 12 8Z" stroke="#C9A84C" strokeWidth="1.2" strokeLinejoin="round"/>
+                <path d="M12 8C12 8 15 5 17 5C18.5 5 19 6 19 7C19 8.5 17.5 8 12 8Z" stroke="#C9A84C" strokeWidth="1.2" strokeLinejoin="round"/>
+              </svg>
+            </div>
+            <span />
+          </div>
+
+          <p className={styles.donationLabel}>Gift the Couple</p>
+          <h3 className={styles.donationTitle2}>A <em>Gift of Love</em></h3>
+          <p className={styles.donationSubtitle}>
+            Your presence is our greatest gift. However, if you wish to bless us further,
+            you may do so anonymously through any of the options below.
+          </p>
+
+          <div className={styles.donationGrid}>
+            <DonationCard
+              icon={
+                <svg viewBox="0 0 24 24" fill="none" width="28" height="28">
+                  <rect x="2" y="5" width="20" height="14" rx="2" stroke="#C9A84C" strokeWidth="1.3"/>
+                  <path d="M2 10h20" stroke="#C9A84C" strokeWidth="1.3"/>
+                  <rect x="5" y="14" width="4" height="2" rx="0.5" fill="#C9A84C" opacity="0.6"/>
+                </svg>
+              }
+              title="Bank Transfer"
+              detail="1234567890"
+              sub="GTBank · Opeyemi Adeoje"
+              note="Anonymous — no need to identify yourself"
+            />
+            <DonationCard
+              icon={
+                <svg viewBox="0 0 24 24" fill="none" width="28" height="28">
+                  <circle cx="12" cy="12" r="9" stroke="#C9A84C" strokeWidth="1.3"/>
+                  <path d="M12 7v5l3 3" stroke="#C9A84C" strokeWidth="1.3" strokeLinecap="round"/>
+                </svg>
+              }
+              title="Opay"
+              detail="08012345678"
+              sub="Opeyemi Adeoje"
+              note="Send any amount — no name required"
+            />
+            <DonationCard
+              icon={
+                <svg viewBox="0 0 24 24" fill="none" width="28" height="28">
+                  <path d="M12 2L2 7l10 5 10-5-10-5z" stroke="#C9A84C" strokeWidth="1.3" strokeLinejoin="round"/>
+                  <path d="M2 17l10 5 10-5" stroke="#C9A84C" strokeWidth="1.3" strokeLinejoin="round"/>
+                  <path d="M2 12l10 5 10-5" stroke="#C9A84C" strokeWidth="1.3" strokeLinejoin="round"/>
+                </svg>
+              }
+              title="Palmpay / Kuda"
+              detail="08012345678"
+              sub="Hammed Adeola"
+              note="All gifts are received with gratitude"
+            />
+          </div>
+
+          <p className={styles.donationFootnote}>
+            ✦ All donations are entirely optional and anonymous ✦
+          </p>
+        </div> */}
 
       </div>
     </section>
