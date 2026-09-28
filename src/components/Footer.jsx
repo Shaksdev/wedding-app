@@ -15,7 +15,7 @@ function Footer() {
         <span style={{ background: 'linear-gradient(90deg,transparent,rgba(201,168,76,0.4),transparent)' }}></span>
       </div>
 
-      <p className={styles.names}>Opeyemi &amp; Abdul-Hammed</p>
+      <p className={styles.names}>Opeyemi &amp; Hammed</p>
       <p className={styles.date}>[Thursday, the 29th of October &middot; 2026] · Ibadan</p>
       <p className={styles.verse}>
         “And of His signs is that He created for you from yourselves mates that you may find tranquility in them. And He placed between you affection and mercy. Indeed, in that are signs for a people who give thought.”

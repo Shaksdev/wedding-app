@@ -47,8 +47,8 @@ const HeartIcon = () => (
 const cards = [
   { Icon: CalendarIcon, label: 'Date',      primary: '[29th October, 2026]', secondary: 'Thursday' },
   { Icon: ClockIcon,    label: 'Time',      primary: '12:00 Noon',        secondary: 'Reception follows' },
-  { Icon: LocationIcon, label: 'Venue',     primary: 'Venue Name Here',   secondary: 'Ibadan, Nigeria' },
-  { Icon: HeartIcon,    label: 'Dress Code', primary: 'White & Gold',     secondary: 'Formal attire' },
+  { Icon: LocationIcon, label: 'Venue',     primary: 'OTM Central Mosque, IwoRoad, Ibadan.',   secondary: 'Ibadan, Nigeria' },
+  { Icon: HeartIcon,    label: 'Dress Code', primary: 'White & Gold',     secondary: '' },
 ]
 
 // ── DetailCard sub-component ───────────────────────────────────
@@ -81,7 +81,7 @@ function WeddingDetails() {
       <div className="section-inner">
         <div className="reveal">
           <p className={styles.label2}>The Celebration</p>
-          <h2 className={styles.title}>Wedding <em>Details</em></h2>
+          <h2 className={styles.title}>Nikkah <em>Details</em></h2>
           <div className="ornament" style={{ margin: '1.5rem 0' }}>
             {/*
               Inline styles in JSX use a JavaScript OBJECT, not a CSS string.

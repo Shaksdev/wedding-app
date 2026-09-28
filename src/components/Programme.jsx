@@ -6,11 +6,11 @@ import styles from './Programme.module.css'
 // Storing data separately from JSX is a React best practice —
 // it makes content changes trivial (no touching JSX).
 const events = [
-  { time: '12:00 PM', label: 'Arrival of Guests',       side: 'left'  },
-  { time: '01:00 PM', label: 'Wedding Ceremony',         side: 'right' },
-  { time: '02:30 PM', label: 'Photography & Cocktails',  side: 'left'  },
-  { time: '04:00 PM', label: 'Reception & Dinner',       side: 'right' },
-  { time: 'Evening',  label: 'Dancing & Celebrations',   side: 'left'  },
+  { time: '10:00 AM', label: 'Arrival of Guests',       side: 'left'  },
+  { time: '10:00 AM', label: 'Introduction Ceremony',         side: 'right' },
+  { time: '12:00 PM', label: 'Aqd Nikkah',  side: 'left'  },
+  { time: '2:00 PM', label: 'Photography & Reception',       side: 'right' },
+  
 ]
 
 function TimelineItem({ time, label, side }) {

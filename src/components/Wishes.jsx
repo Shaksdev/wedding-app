@@ -92,7 +92,7 @@ function Wishes() {
               <label>Your Name</label>
               <input
                 type="text"
-                placeholder="e.g. Aunty Funke"
+                placeholder="e.g. Aunty Ashabi"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 required={!anonymous}

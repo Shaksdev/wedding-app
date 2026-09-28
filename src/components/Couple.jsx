@@ -4,7 +4,7 @@ import styles from './Couple.module.css'
 
 const coupleData = [
   { name: 'Opeyemi Jelilah', role: 'The Bride',  initial: 'O' },
-  { name: 'Olakunle Abdul-Hammed',  role: 'The Groom',  initial: 'H' },
+  { name: 'Olakunle Hammed',  role: 'The Groom',  initial: 'H' },
 ]
 
 function PortraitCard({ name, role, initial }) {

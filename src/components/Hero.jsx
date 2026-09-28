@@ -64,7 +64,7 @@ function Hero({ envelopeOpened }) {
         <div className={styles.namesWrapper}>
           <span className={styles.brideName}>Opeyemi <br /> Jelilah</span>
           <span className={styles.ampersand}>&amp;</span>
-          <span className={styles.groomName}>Olakunle Abdul-Hammed</span>
+          <span className={styles.groomName}>Olakunle Hammed</span>
         </div>
 
         <div className={styles.dividerLine}>
