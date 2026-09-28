@@ -25,6 +25,7 @@ import Hero           from './components/Hero'
 import OurStory       from './components/OurStory'
 import Couple         from './components/Couple'
 import WeddingDetails from './components/WeddingDetails'
+import Location      from './components/Location'
 import Programme      from './components/Programme'
 import Wishes         from './components/Wishes'
 import Footer         from './components/Footer'
@@ -112,6 +113,7 @@ function App() {
       <OurStory />
       <Couple />
       <WeddingDetails />
+      <Location />
       <Programme />
       <Wishes />
       <Footer />

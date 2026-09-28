@@ -49,7 +49,7 @@ function OurStory() {
             the world seemed to hold its breath.
           </p>
           <p>
-            Through seasons of growth and the quiet beauty of everyday moments, Opeyemi and Abdul-Hammed
+            Through seasons of growth and the quiet beauty of everyday moments, Opeyemi and Hammed
             discovered in each other a companion, a confidant, and a home. Today, they invite you
             to witness the beginning of their forever.
           </p>

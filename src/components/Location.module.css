@@ -1,0 +1,97 @@
+.section { background: var(--dark); }
+.inner { max-width: 880px; margin: 0 auto; padding: 6rem 2rem; }
+
+.label {
+  font-family: 'Cinzel', serif; font-size: 0.6rem; letter-spacing: 0.5em;
+  color: var(--gold); text-transform: uppercase; text-align: center; margin-bottom: 1rem;
+}
+.title {
+  font-family: 'Cormorant Garamond', serif; font-size: clamp(2rem,5vw,3rem);
+  font-weight: 300; color: var(--gold-pale); text-align: center; margin-bottom: 0.4rem;
+}
+.title em { font-style: italic; color: var(--gold); }
+.subtitle {
+  font-family: 'EB Garamond', serif; font-style: italic; font-size: 1.05rem;
+  color: var(--muted); text-align: center; margin-top: 0.4rem;
+}
+
+.card {
+  position: relative; margin-top: 3.5rem;
+  border: 1px solid rgba(201,168,76,0.2);
+  background: #120A01; overflow: hidden;
+}
+
+.cornerTL, .cornerTR, .cornerBL, .cornerBR {
+  position: absolute; width: 24px; height: 24px; z-index: 2; pointer-events: none;
+}
+.cornerTL { top: 10px; left: 10px; border-top: 1px solid rgba(201,168,76,0.6); border-left: 1px solid rgba(201,168,76,0.6); }
+.cornerTR { top: 10px; right: 10px; border-top: 1px solid rgba(201,168,76,0.6); border-right: 1px solid rgba(201,168,76,0.6); }
+.cornerBL { bottom: 10px; left: 10px; border-bottom: 1px solid rgba(201,168,76,0.6); border-left: 1px solid rgba(201,168,76,0.6); }
+.cornerBR { bottom: 10px; right: 10px; border-bottom: 1px solid rgba(201,168,76,0.6); border-right: 1px solid rgba(201,168,76,0.6); }
+
+.venueInfo {
+  display: flex; align-items: center; gap: 1.2rem;
+  padding: 1.6rem 2rem;
+  border-bottom: 1px solid rgba(201,168,76,0.1);
+  flex-wrap: wrap;
+}
+.venueIcon {
+  width: 42px; height: 42px; flex-shrink: 0;
+  border: 1px solid rgba(201,168,76,0.25);
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(201,168,76,0.04);
+}
+.venueIcon svg { width: 20px; height: 20px; }
+.venueText { flex: 1; min-width: 160px; }
+.venueName {
+  font-family: 'Cormorant Garamond', serif; font-size: 1.3rem;
+  font-weight: 400; color: var(--gold-pale); margin-bottom: 0.15rem;
+}
+.venueAddr {
+  font-family: 'EB Garamond', serif; font-style: italic;
+  font-size: 0.95rem; color: var(--muted);
+}
+.directionsBtn {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  font-family: 'Cinzel', serif; font-size: 0.52rem; letter-spacing: 0.3em;
+  text-transform: uppercase; color: var(--dark);
+  background: linear-gradient(135deg, #C9A84C, #E8D5A3, #C9A84C);
+  padding: 0.7rem 1.4rem; text-decoration: none;
+  transition: opacity 0.3s, transform 0.2s; white-space: nowrap;
+}
+.directionsBtn:hover { opacity: 0.85; transform: translateY(-1px); }
+
+.mapWrap { position: relative; width: 100%; height: 420px; }
+.mapFrame {
+  width: 100%; height: 100%; border: none; display: block;
+  filter: grayscale(30%) contrast(1.05) brightness(0.85);
+}
+.mapOverlay {
+  position: absolute; inset: 0; pointer-events: none;
+  background:
+    linear-gradient(to bottom, #120A01 0%, transparent 12%, transparent 88%, #120A01 100%),
+    linear-gradient(to right, #120A01 0%, transparent 8%, transparent 92%, #120A01 100%);
+}
+
+.detailsRow {
+  display: flex; align-items: center; justify-content: center;
+  gap: 1.5rem; padding: 1.4rem 2rem;
+  border-top: 1px solid rgba(201,168,76,0.1); flex-wrap: wrap;
+}
+.detailItem {
+  display: flex; align-items: center; gap: 0.5rem;
+  font-family: 'Cinzel', serif; font-size: 0.52rem;
+  letter-spacing: 0.25em; color: var(--gold-light); text-transform: uppercase;
+}
+.detailDot {
+  width: 3px; height: 3px; background: var(--gold);
+  opacity: 0.4; border-radius: 50%; flex-shrink: 0;
+}
+
+@media (max-width: 600px) {
+  .mapWrap { height: 280px; }
+  .venueInfo { gap: 1rem; }
+  .directionsBtn { width: 100%; justify-content: center; }
+  .detailsRow { gap: 1rem; }
+  .detailDot { display: none; }
+}

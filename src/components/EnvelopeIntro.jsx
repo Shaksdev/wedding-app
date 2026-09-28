@@ -67,7 +67,7 @@ function EnvelopeIntro({ onOpen }) {
 
       {/* Pre-text */}
       {!opening && (
-        <p className={styles.preText}>A wedding invitation</p>
+        <p className={styles.preText}>Nikkah invitation</p>
       )}
 
       {/* THE ENVELOPE */}
@@ -98,7 +98,7 @@ function EnvelopeIntro({ onOpen }) {
                   <span /><span className={styles.cardDiamond} /><span />
                 </div>
                 <p className={styles.cardDate}>[Day · Month · Year]</p>
-                <p className={styles.cardVenue}>Lagos, Nigeria</p>
+                <p className={styles.cardVenue}>Ibadan, Nigeria</p>
 
                 <div className={styles.cardBottomLine} />
               </div>

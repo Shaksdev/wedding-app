@@ -47,7 +47,7 @@ const HeartIcon = () => (
 const cards = [
   { Icon: CalendarIcon, label: 'Date',      primary: '[29th October, 2026]', secondary: 'Thursday' },
   { Icon: ClockIcon,    label: 'Time',      primary: '12:00 Noon',        secondary: 'Reception follows' },
-  { Icon: LocationIcon, label: 'Venue',     primary: 'OTM Central Mosque, IwoRoad, Ibadan.',   secondary: 'Ibadan, Nigeria' },
+  { Icon: LocationIcon, label: 'Venue', primary: 'OTM Central Mosque', secondary: 'Iwo Road, Ibadan' },
   { Icon: HeartIcon,    label: 'Dress Code', primary: 'White & Gold',     secondary: '' },
 ]
 
