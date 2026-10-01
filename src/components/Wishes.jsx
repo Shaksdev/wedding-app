@@ -1,14 +1,24 @@
-// Wishes.jsx
-// Changes from previous version:
-//   - Removed "relation" field
-//   - Added "Send Anonymously" toggle checkbox
-//   - Added Donation section below the wishes board
-
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import emailjs from '@emailjs/browser'
+import {
+  collection,
+  addDoc,
+  onSnapshot,
+  orderBy,
+  query,
+  serverTimestamp
+} from 'firebase/firestore'
+import { db } from '../firebase'
 import useReveal from '../hooks/useReveal'
 import styles from './Wishes.module.css'
 
-// ── WishCard ───────────────────────────────────────────────────
+const SERVICE_ID       = import.meta.env.VITE_EMAILJS_SERVICE_ID
+const TEMPLATE_COUPLE  = import.meta.env.VITE_EMAILJS_TEMPLATE_COUPLE
+const TEMPLATE_GUEST   = import.meta.env.VITE_EMAILJS_TEMPLATE_GUEST
+const PUBLIC_KEY       = import.meta.env.VITE_EMAILJS_PUBLIC_KEY
+// import.meta.env is how Vite reads .env variables.
+// VITE_ prefix is required — Vite ignores variables without it for security.
+
 function WishCard({ name, message, anonymous }) {
   return (
     <div className={styles.wishCard}>
@@ -20,57 +30,116 @@ function WishCard({ name, message, anonymous }) {
   )
 }
 
-// ── DonationCard ───────────────────────────────────────────────
-function DonationCard({ icon, title, detail, sub, note }) {
-  const [copied, setCopied] = useState(false)
-
-  const handleCopy = () => {
-    navigator.clipboard.writeText(detail)
-    setCopied(true)
-    setTimeout(() => setCopied(false), 2000)
-  }
-
-  return (
-    <div className={styles.donationCard}>
-      <div className={styles.donationIcon}>{icon}</div>
-      <p className={styles.donationTitle}>{title}</p>
-      <p className={styles.donationDetail}>{detail}</p>
-      {sub  && <p className={styles.donationSub}>{sub}</p>}
-      {note && <p className={styles.donationNote}>{note}</p>}
-      <button className={styles.copyBtn} onClick={handleCopy}>
-        {copied ? '✓ Copied' : 'Copy'}
-      </button>
-    </div>
-  )
-}
-
-// ── Main Wishes component ──────────────────────────────────────
 function Wishes() {
   const sectionRef = useReveal()
 
-  const [name,      setName]      = useState('')
-  const [message,   setMessage]   = useState('')
-  const [anonymous, setAnonymous] = useState(false)
+  const [name,        setName]        = useState('')
+  const [email,       setEmail]       = useState('')
+  const [message,     setMessage]     = useState('')
+  const [anonymous,   setAnonymous]   = useState(false)
   const [wishes,      setWishes]      = useState([])
+  const [loading,     setLoading]     = useState(true)
+  const [submitting,  setSubmitting]  = useState(false)
   const [showConfirm, setShowConfirm] = useState(false)
+  const [error,       setError]       = useState('')
 
-  const handleSubmit = (e) => {
+  // Initialise EmailJS once when the component mounts
+  useEffect(() => {
+    if (PUBLIC_KEY) emailjs.init(PUBLIC_KEY)
+  }, [])
+
+  // Real-time Firestore listener
+  useEffect(() => {
+    if (!db) {
+      setError('Wishes are not connected yet. Please configure Firebase to enable them.')
+      setLoading(false)
+      return
+    }
+
+    const q = query(
+      collection(db, 'wishes'),
+      orderBy('timestamp', 'asc')
+    )
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const fetched = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data()
+      }))
+      setWishes(fetched)
+      setLoading(false)
+    }, (err) => {
+      console.error('Firestore error:', err)
+      setError('Could not load messages. Please refresh.')
+      setLoading(false)
+    })
+    return () => unsubscribe()
+  }, [])
+
+  const handleSubmit = async (e) => {
     e.preventDefault()
     if (!message.trim()) return
     if (!anonymous && !name.trim()) return
-
-    const newWish = {
-      name:      anonymous ? '' : name.trim(),
-      message:   message.trim(),
-      anonymous,
+    if (!db) {
+      setError('Wishes cannot be sent until Firebase is configured.')
+      return
+    }
+    if (!SERVICE_ID || !TEMPLATE_COUPLE || !PUBLIC_KEY) {
+      setError('Wishes cannot be emailed until EmailJS is configured.')
+      return
+    }
+    if (!anonymous && email.trim() && !TEMPLATE_GUEST) {
+      setError('Guest confirmation email is not configured yet.')
+      return
     }
 
-    setWishes([...wishes, newWish])
-    setName('')
-    setMessage('')
-    setAnonymous(false)
-    setShowConfirm(true)
-    setTimeout(() => setShowConfirm(false), 4000)
+    setSubmitting(true)
+    setError('')
+
+    const displayName = anonymous ? 'Anonymous' : name.trim()
+
+    try {
+      // Step 1 — Save to Firestore
+      await addDoc(collection(db, 'wishes'), {
+        name:      displayName,
+        email:     anonymous ? '' : email.trim(),
+        message:   message.trim(),
+        anonymous,
+        timestamp: serverTimestamp()
+      })
+
+      // Step 2 — Email the couple (Template 1)
+      // The variable names here must match exactly what you used
+      // in your EmailJS template: {{name}}, {{message}}, {{email}}
+      await emailjs.send(SERVICE_ID, TEMPLATE_COUPLE, {
+        name:    displayName,
+        message: message.trim(),
+        email:   anonymous ? 'Anonymous (no email)' : email.trim(),
+      })
+
+      // Step 3 — Email the guest confirmation (Template 2)
+      // Only send if the guest provided their email and is not anonymous
+      if (!anonymous && email.trim()) {
+        await emailjs.send(SERVICE_ID, TEMPLATE_GUEST, {
+          name:         displayName,
+          message:      message.trim(),
+          guest_email:  email.trim(),
+        })
+      }
+
+      // Reset form
+      setName('')
+      setEmail('')
+      setMessage('')
+      setAnonymous(false)
+      setShowConfirm(true)
+      setTimeout(() => setShowConfirm(false), 5000)
+
+    } catch (err) {
+      console.error('Submission error:', err)
+      setError('Something went wrong. Please try again.')
+    } finally {
+      setSubmitting(false)
+    }
   }
 
   return (
@@ -88,25 +157,42 @@ function Wishes() {
         <form className={`${styles.form} reveal`} onSubmit={handleSubmit}>
 
           {!anonymous && (
-            <div className={styles.group}>
-              <label>Your Name</label>
-              <input
-                type="text"
-                placeholder="e.g. Aunty Ashabi"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                required={!anonymous}
-              />
-            </div>
+            <>
+              <div className={styles.group}>
+                <label>Your Name</label>
+                <input
+                  type="text"
+                  placeholder="e.g. Aunty Ashabi"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  required={!anonymous}
+                  disabled={submitting}
+                />
+              </div>
+              <div className={styles.group}>
+                <label>
+                  Your Email
+                  <span className={styles.optionalTag}> (optional — for confirmation)</span>
+                </label>
+                <input
+                  type="email"
+                  placeholder="your@email.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  disabled={submitting}
+                />
+              </div>
+            </>
           )}
 
           <div className={styles.group}>
             <label>Your Message</label>
             <textarea
-              placeholder="Write your heartfelt wishes for Opeyemi & Hammed..."
+              placeholder="Write your heartfelt wishes for Opeyemi &amp; Hammed..."
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               required
+              disabled={submitting}
             />
           </div>
 
@@ -115,20 +201,27 @@ function Wishes() {
               type="checkbox"
               checked={anonymous}
               onChange={(e) => setAnonymous(e.target.checked)}
+              disabled={submitting}
             />
             <span className={styles.anonBox}>
-              {anonymous && <span className={styles.anonCheck}>✦</span>}
+              {anonymous && <span className={styles.anonCheck}>&#10022;</span>}
             </span>
             <span className={styles.anonLabel}>Send anonymously</span>
           </label>
 
-          <button type="submit" className={styles.submitBtn}>
-            Send Your Wishes ✦
+          {error && <p className={styles.errorMsg}>{error}</p>}
+
+          <button
+            type="submit"
+            className={styles.submitBtn}
+            disabled={submitting}
+          >
+            {submitting ? 'Sending...' : 'Send Your Wishes '}
           </button>
 
           {showConfirm && (
             <p className={styles.confirm}>
-              ✦ Your blessing has been received. Thank you for your love! ✦
+              &#10022; Your blessing has been received. Thank you for your love! &#10022;
             </p>
           )}
         </form>
@@ -145,14 +238,16 @@ function Wishes() {
         </div>
 
         <div className={styles.board}>
-          {wishes.length === 0 ? (
+          {loading ? (
+            <p className={styles.empty}>Loading messages...</p>
+          ) : wishes.length === 0 ? (
             <p className={styles.empty}>
-              Be the first to leave a message for the happy couple ✦
+              Be the first to leave a message for the happy couple &#10022;
             </p>
           ) : (
-            [...wishes].reverse().map((wish, index) => (
+            [...wishes].reverse().map((wish) => (
               <WishCard
-                key={index}
+                key={wish.id}
                 name={wish.name}
                 message={wish.message}
                 anonymous={wish.anonymous}
@@ -161,9 +256,7 @@ function Wishes() {
           )}
         </div>
 
-        {/* ── DONATION SECTION ── */}
         {/* <div className={`${styles.donationSection} reveal`}>
-
           <div className={styles.donationDivider}>
             <span />
             <div className={styles.donationDividerIcon}>
@@ -181,53 +274,51 @@ function Wishes() {
           <p className={styles.donationLabel}>Gift the Couple</p>
           <h3 className={styles.donationTitle2}>A <em>Gift of Love</em></h3>
           <p className={styles.donationSubtitle}>
-            Your presence is our greatest gift. However, if you wish to bless us further,
-            you may do so anonymously through any of the options below.
+            Your presence is our greatest gift. However, if you wish to celebrate
+            us further, you may send a gift anonymously. No account or name required.
           </p>
 
-          <div className={styles.donationGrid}>
-            <DonationCard
-              icon={
-                <svg viewBox="0 0 24 24" fill="none" width="28" height="28">
-                  <rect x="2" y="5" width="20" height="14" rx="2" stroke="#C9A84C" strokeWidth="1.3"/>
-                  <path d="M2 10h20" stroke="#C9A84C" strokeWidth="1.3"/>
-                  <rect x="5" y="14" width="4" height="2" rx="0.5" fill="#C9A84C" opacity="0.6"/>
-                </svg>
-              }
-              title="Bank Transfer"
-              detail="1234567890"
-              sub="GTBank · Opeyemi Adeoje"
-              note="Anonymous — no need to identify yourself"
-            />
-            <DonationCard
-              icon={
-                <svg viewBox="0 0 24 24" fill="none" width="28" height="28">
-                  <circle cx="12" cy="12" r="9" stroke="#C9A84C" strokeWidth="1.3"/>
-                  <path d="M12 7v5l3 3" stroke="#C9A84C" strokeWidth="1.3" strokeLinecap="round"/>
-                </svg>
-              }
-              title="Opay"
-              detail="08012345678"
-              sub="Opeyemi Adeoje"
-              note="Send any amount — no name required"
-            />
-            <DonationCard
-              icon={
-                <svg viewBox="0 0 24 24" fill="none" width="28" height="28">
-                  <path d="M12 2L2 7l10 5 10-5-10-5z" stroke="#C9A84C" strokeWidth="1.3" strokeLinejoin="round"/>
-                  <path d="M2 17l10 5 10-5" stroke="#C9A84C" strokeWidth="1.3" strokeLinejoin="round"/>
-                  <path d="M2 12l10 5 10-5" stroke="#C9A84C" strokeWidth="1.3" strokeLinejoin="round"/>
-                </svg>
-              }
-              title="Palmpay / Kuda"
-              detail="08012345678"
-              sub="Hammed Adeola"
-              note="All gifts are received with gratitude"
-            />
+          <div className={styles.paystackBox}>
+            <div className={styles.psCornerTL} />
+            <div className={styles.psCornerTR} />
+            <div className={styles.psCornerBL} />
+            <div className={styles.psCornerBR} />
+            <div className={styles.psLogo}>
+              <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="20" cy="20" r="19" stroke="#C9A84C" strokeWidth="0.8" opacity="0.4"/>
+                <text x="20" y="27" textAnchor="middle" fontFamily="Cinzel, serif"
+                  fontSize="18" fontWeight="600" fill="#C9A84C">P</text>
+              </svg>
+            </div>
+            <p className={styles.psProvider}>Secured by Paystack</p>
+            <p className={styles.psAmount}>Enter any amount you wish</p>
+            <p className={styles.psNote}>
+              You will be taken to a secure Paystack page. No login needed.
+              Pay with card, bank transfer, or USSD. Completely anonymous.
+            </p>
+            <a
+              href="https://paystack.com/pay/your-payment-link"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.psButton}
+            >
+              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" width="16" height="16">
+                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78z"
+                  fill="currentColor" opacity="0.9"/>
+              </svg>
+              Send a Gift
+            </a>
+            <div className={styles.psTrust}>
+              <span>SSL Secured</span>
+              <span>|</span>
+              <span>Card / Bank / USSD</span>
+              <span>|</span>
+              <span>Instant</span>
+            </div>
           </div>
 
           <p className={styles.donationFootnote}>
-            ✦ All donations are entirely optional and anonymous ✦
+            All gifts are entirely optional and received with gratitude
           </p>
         </div> */}
 

@@ -21,10 +21,10 @@ function OurStory() {
 
         {/* reveal class + global CSS makes this fade in on scroll */}
         <div className="reveal">
-          <p className="section-label">Our Story</p>
-          <h2 className="section-title">
+          <p className="section-label">Our Love Story</p>
+          {/* <h2 className="section-title">
             A love <em>written in the stars</em>
-          </h2>
+          </h2> */}
 
           {/* Ornamental gold divider */}
           <div className="ornament">
@@ -44,15 +44,11 @@ function OurStory() {
             Together: className="storyText_abc123 reveal"
           */}
           <p className={styles.dropCap}>
-            What began as a chance encounter grew into something neither could have imagined — a bond
-            forged in laughter, faith, and an unshakeable knowing. From the moment their eyes met,
-            the world seemed to hold its breath.
-          </p>
-          <p>
             Through seasons of growth and the quiet beauty of everyday moments, Opeyemi and Hammed
             discovered in each other a companion, a confidant, and a home. Today, they invite you
-            to witness the beginning of their forever.
+            to witness the completion of their deen beginning of their forever.
           </p>
+        
         </div>
 
       </div>
