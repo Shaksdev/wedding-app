@@ -1,0 +1,189 @@
+.section { background: var(--cream); }
+.inner { max-width: 880px; margin: 0 auto; padding: 6rem 2rem; }
+
+.label {
+  font-family: 'Cinzel', serif; font-size: 0.6rem; letter-spacing: 0.5em;
+  color: var(--gold-dark); text-transform: uppercase; text-align: center; margin-bottom: 1rem;
+}
+.title {
+  font-family: 'Cormorant Garamond', serif; font-size: clamp(2rem,5vw,3.2rem);
+  font-weight: 300; color: var(--brown); text-align: center; margin-bottom: 0.4rem;
+}
+.title em { font-style: italic; color: var(--gold-dark); }
+.subtitle {
+  font-family: 'EB Garamond', serif; font-style: italic; font-size: 1.05rem;
+  color: var(--muted); text-align: center; margin-top: 0.4rem;
+}
+
+/* ── Locked state ── */
+.lockedBox {
+  max-width: 480px; margin: 3.5rem auto 0;
+  border: 1px solid rgba(201,168,76,0.2);
+  background: var(--ivory);
+  padding: 3.5rem 2rem;
+  text-align: center;
+  display: flex; flex-direction: column; align-items: center; gap: 1.2rem;
+}
+.lockIcon {
+  width: 56px; height: 56px;
+  border: 1px solid rgba(201,168,76,0.3);
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(201,168,76,0.04);
+}
+.lockIcon svg { width: 26px; height: 26px; }
+.lockedTitle {
+  font-family: 'Cormorant Garamond', serif; font-size: 1.5rem;
+  font-weight: 300; color: var(--brown);
+}
+.lockedSub {
+  font-family: 'EB Garamond', serif; font-style: italic;
+  font-size: 1rem; color: var(--muted); line-height: 1.8; max-width: 340px;
+}
+.lockedDate {
+  display: flex; align-items: center; gap: 0.6rem;
+  font-family: 'Cinzel', serif; font-size: 1rem;
+  letter-spacing: 0.2em; color: var(--gold-dark);
+}
+.lockedDot { color: var(--gold); opacity: 0.5; }
+
+/* ── Upload box ── */
+.uploadBox {
+  position: relative; margin-top: 3.5rem;
+  border: 1px solid rgba(201,168,76,0.2);
+  background: var(--ivory);
+  padding: 2.5rem;
+}
+.uploadCornerTL, .uploadCornerTR, .uploadCornerBL, .uploadCornerBR {
+  position: absolute; width: 20px; height: 20px; pointer-events: none;
+}
+.uploadCornerTL { top: 8px; left: 8px; border-top: 1px solid rgba(139,105,20,0.4); border-left: 1px solid rgba(139,105,20,0.4); }
+.uploadCornerTR { top: 8px; right: 8px; border-top: 1px solid rgba(139,105,20,0.4); border-right: 1px solid rgba(139,105,20,0.4); }
+.uploadCornerBL { bottom: 8px; left: 8px; border-bottom: 1px solid rgba(139,105,20,0.4); border-left: 1px solid rgba(139,105,20,0.4); }
+.uploadCornerBR { bottom: 8px; right: 8px; border-bottom: 1px solid rgba(139,105,20,0.4); border-right: 1px solid rgba(139,105,20,0.4); }
+
+.dropZone {
+  display: flex; flex-direction: column; align-items: center;
+  gap: 0.8rem; padding: 3rem 2rem;
+  border: 1px dashed rgba(201,168,76,0.3);
+  cursor: pointer; transition: background 0.3s, border-color 0.3s;
+}
+.dropZone:hover {
+  background: rgba(201,168,76,0.04);
+  border-color: rgba(201,168,76,0.6);
+}
+.dropText {
+  font-family: 'Cormorant Garamond', serif; font-size: 1.2rem;
+  font-weight: 300; color: var(--brown);
+}
+.dropSub {
+  font-family: 'Cinzel', serif; font-size: 0.45rem;
+  letter-spacing: 0.35em; color: var(--muted); text-transform: uppercase;
+}
+.fileInput { display: none; }
+
+/* Preview */
+.previewArea {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: start;
+}
+.previewImg {
+  width: 100%; aspect-ratio: 1; object-fit: cover;
+  border: 1px solid rgba(201,168,76,0.2);
+}
+.previewForm { display: flex; flex-direction: column; gap: 1rem; }
+.group { display: flex; flex-direction: column; gap: 0.5rem; }
+.group label {
+  font-family: 'Cinzel', serif; font-size: 0.52rem; letter-spacing: 0.35em;
+  color: var(--gold-dark); text-transform: uppercase;
+}
+.optional { font-family: 'EB Garamond', serif; font-style: italic; font-size: 0.8rem; letter-spacing: 0; color: var(--muted); text-transform: none; }
+.group input {
+  background: rgba(255,255,255,0.6); border: 1px solid rgba(201,168,76,0.3);
+  color: var(--text); padding: 0.7rem 1rem;
+  font-family: 'EB Garamond', serif; font-size: 1rem;
+  outline: none; transition: border-color 0.3s;
+}
+.group input:focus { border-color: var(--gold-dark); }
+.group input:disabled { opacity: 0.5; }
+
+.previewBtns { display: flex; gap: 0.8rem; margin-top: 0.5rem; }
+.cancelBtn {
+  flex: 1; font-family: 'Cinzel', serif; font-size: 0.52rem; letter-spacing: 0.25em;
+  text-transform: uppercase; color: var(--muted);
+  background: transparent; border: 1px solid rgba(201,168,76,0.2);
+  padding: 0.75rem; cursor: pointer; transition: border-color 0.2s;
+}
+.cancelBtn:hover { border-color: var(--gold-dark); color: var(--brown); }
+.uploadBtn {
+  flex: 2; font-family: 'Cinzel', serif; font-size: 0.52rem; letter-spacing: 0.25em;
+  text-transform: uppercase; color: var(--dark);
+  background: linear-gradient(135deg, #C9A84C, #E8D5A3, #C9A84C);
+  border: none; padding: 0.75rem; cursor: pointer; transition: opacity 0.3s;
+}
+.uploadBtn:hover { opacity: 0.85; }
+.uploadBtn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.error {
+  font-family: 'EB Garamond', serif; font-style: italic;
+  font-size: 0.9rem; color: #c0392b;
+}
+.confirmMsg {
+  font-family: 'EB Garamond', serif; font-style: italic;
+  font-size: 1rem; color: var(--gold-dark); text-align: center;
+  margin-top: 1rem; animation: fadeIn 0.8s ease;
+}
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+/* ── Photo grid ── */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 1rem;
+  margin-top: 3rem;
+}
+.photoCard {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(201,168,76,0.15);
+  background: var(--ivory);
+  aspect-ratio: 1;
+}
+
+.photoSkeleton {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, var(--ivory) 25%, #e8e0cc 50%, var(--ivory) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+@keyframes shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+.photo {
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 0.4s;
+  display: block;
+}
+
+.photoVisible {
+  opacity: 1;
+}
+.photoBy {
+  padding: 0.5rem 0.7rem;
+  font-family: 'Cinzel', serif; font-size: 0.42rem;
+  letter-spacing: 0.3em; color: var(--muted); text-transform: uppercase;
+}
+
+.emptyGallery {
+  text-align: center; margin-top: 3rem;
+  font-family: 'EB Garamond', serif; font-style: italic;
+  font-size: 1rem; color: var(--muted); opacity: 0.6;
+}
+
+@media (max-width: 600px) {
+  .previewArea { grid-template-columns: 1fr; }
+  .grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
+}

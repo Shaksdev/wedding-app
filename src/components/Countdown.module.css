@@ -1,0 +1,92 @@
+.wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 2rem;
+  margin-bottom: 2.3rem;
+  opacity: 0;
+  animation: fadeIn 1s ease 2.2s forwards;
+}
+
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+.label {
+  font-family: 'Cinzel', serif;
+  font-size: clamp(0.45rem, 1.2vw, 0.58rem);
+  letter-spacing: 0.45em;
+  color: rgba(201,168,76,0.6);
+  text-transform: uppercase;
+}
+
+.ticker {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.unit {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+  min-width: 60px;
+}
+
+.number {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(2rem, 5vw, 3.2rem);
+  font-weight: 300;
+  color: var(--gold-pale);
+  line-height: 1;
+  /* subtle box around each number */
+  border: 1px solid rgba(201,168,76,0.15);
+  padding: 0.4rem 0.8rem;
+  background: rgba(201,168,76,0.04);
+  min-width: 70px;
+  text-align: center;
+  /* flip animation when number changes */
+  transition: opacity 0.15s ease;
+}
+
+.unitLabel {
+  font-family: 'Cinzel', serif;
+  font-size: 0.4rem;
+  letter-spacing: 0.4em;
+  color: rgba(201,168,76,0.45);
+  text-transform: uppercase;
+}
+
+.colon {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(1.5rem, 4vw, 2.5rem);
+  color: var(--gold);
+  opacity: 0.4;
+  margin-bottom: 1.2rem;
+  animation: blink 1s ease-in-out infinite;
+}
+@keyframes blink {
+  0%, 100% { opacity: 0.4; }
+  50%       { opacity: 0.9; }
+}
+
+.marriedText {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(1.8rem, 5vw, 3rem);
+  font-weight: 300;
+  font-style: italic;
+  color: var(--gold-pale);
+}
+.marriedSub {
+  font-family: 'Cinzel', serif;
+  font-size: 0.6rem;
+  letter-spacing: 0.5em;
+  color: var(--gold);
+  text-transform: uppercase;
+}
+
+@media (max-width: 480px) {
+  .ticker { gap: 0.4rem; }
+  .number { min-width: 52px; padding: 0.3rem 0.5rem; }
+  .unit { min-width: 44px; }
+}

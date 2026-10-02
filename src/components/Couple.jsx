@@ -3,7 +3,7 @@ import useReveal from '../hooks/useReveal'
 import styles from './Couple.module.css'
 
 const coupleData = [
-  { name: 'Opeyemi Jelilah', role: 'The Bride',  initial: 'O' },
+  { name: 'Opeyemi Jelilah', role: 'The Bride',  initial: 'J' },
   { name: 'Olakunle Hammed',  role: 'The Groom',  initial: 'H' },
 ]
 

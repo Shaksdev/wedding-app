@@ -28,6 +28,7 @@ import WeddingDetails from './components/WeddingDetails'
 import Location      from './components/Location'
 import Programme      from './components/Programme'
 import Wishes         from './components/Wishes'
+import PhotoGallery from './components/PhotoGallery'
 import Footer         from './components/Footer'
 
 // This is the App component function.
@@ -116,6 +117,7 @@ function App() {
       <Location />
       <Programme />
       <Wishes />
+      <PhotoGallery />
       <Footer />
     </>
   )

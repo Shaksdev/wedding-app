@@ -12,6 +12,7 @@
 // └─────────────────────────────────────────────────────────────┘
 
 import styles from './Hero.module.css'
+import Countdown from './Countdown'
 
 // The CornerOrnament is a tiny reusable sub-component.
 // It draws one decorative SVG corner and accepts a "position" prop
@@ -76,7 +77,8 @@ function Hero({ envelopeOpened }) {
         <p className={styles.heroDate}>
           Thursday, the 29th of October &middot; 2026 &middot; Ibadan, Nigeria
         </p>
-
+        
+      <Countdown />
         <div className={styles.heroCta}>
           {/*
             Smooth scroll to a section:

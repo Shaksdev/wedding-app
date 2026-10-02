@@ -188,7 +188,7 @@ function Wishes() {
           <div className={styles.group}>
             <label>Your Message</label>
             <textarea
-              placeholder="Write your heartfelt wishes for Opeyemi &amp; Hammed..."
+              placeholder="Write your heartfelt wishes for Jelilah &amp; Hammed..."
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               required

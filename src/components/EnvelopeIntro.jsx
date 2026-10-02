@@ -91,11 +91,11 @@ function EnvelopeIntro({ onOpen }) {
               <span className={styles.cardInitial}>H</span>
             </div>
 
-            <p className={styles.cardNames}>Opeyemi &amp; Hammed</p>
+            <p className={styles.cardNames}>Jelilah &amp; Hammed</p>
             <div className={styles.cardDivider}>
               <span /><span className={styles.cardDiamond} /><span />
             </div>
-            <p className={styles.cardDate}>[Day · Month · Year]</p>
+            <p className={styles.cardDate}>[29th · October · 2026]</p>
             <p className={styles.cardVenue}>Ibadan, Nigeria</p>
 
             <div className={styles.cardBottomLine} />

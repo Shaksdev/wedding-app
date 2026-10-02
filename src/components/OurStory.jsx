@@ -44,9 +44,9 @@ function OurStory() {
             Together: className="storyText_abc123 reveal"
           */}
           <p className={styles.dropCap}>
-            Through seasons of growth and the quiet beauty of everyday moments, Opeyemi and Hammed
+            Through seasons of growth and the quiet beauty of everyday moments, Jelilah and Hammed
             discovered in each other a companion, a confidant, and a home. Today, they invite you
-            to witness the completion of their deen beginning of their forever.
+            to witness the completion of their deen and beginning of their forever.
           </p>
         
         </div>
