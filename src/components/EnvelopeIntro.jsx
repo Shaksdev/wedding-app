@@ -86,7 +86,7 @@ function EnvelopeIntro({ onOpen }) {
             <p className={styles.cardEyebrow}>Together with their families</p>
 
             <div className={styles.cardMonogram}>
-              <span className={styles.cardInitial}>O</span>
+              <span className={styles.cardInitial}>J</span>
               <span className={styles.cardAmp}>&amp;</span>
               <span className={styles.cardInitial}>H</span>
             </div>
@@ -164,7 +164,7 @@ function EnvelopeIntro({ onOpen }) {
             <text x="60" y="44" fontFamily="'Amiri', 'Traditional Arabic', serif" fontSize="11" fill="#8B6914" textAnchor="middle">نِكَاح</text>
 
             {/* Modern Stacked Monogram */}
-            <text x="60" y="63" fontFamily="'Cinzel', serif" fontSize="21" fill="#8B6914" textAnchor="middle" letterSpacing="1">O</text>
+            <text x="60" y="63" fontFamily="'Cinzel', serif" fontSize="21" fill="#8B6914" textAnchor="middle" letterSpacing="1">J</text>
             
             {/* Center Diamond Divider */}
             <polygon points="60,69 62,71 60,73 58,71" fill="#8B6914" opacity="0.8" />
